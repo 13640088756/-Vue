@@ -79,42 +79,42 @@
                             <ul>
                                 <li class="product">
                                     <a href="" target="_blank">
-                                        <div class="pro-img"><img src="/imgs/nav-img/nav-1.png" alt=""></div>
+                                        <div class="pro-img"><img src="/imgs/nav-img/nav-3-1.jpg" alt=""></div>
                                         <div class="pro-name">小米CC9</div>
                                         <div class="pro-price">1799元</div>
                                     </a>
                                 </li>
                                 <li class="product">
                                     <a href="" target="_blank">
-                                        <div class="pro-img"><img src="/imgs/nav-img/nav-1.png" alt=""></div>
+                                        <div class="pro-img"><img src="/imgs/nav-img/nav-3-2.jpg" alt=""></div>
                                         <div class="pro-name">小米CC9</div>
                                         <div class="pro-price">1799元</div>
                                     </a>
                                 </li>
                                 <li class="product">
                                     <a href="" target="_blank">
-                                        <div class="pro-img"><img src="/imgs/nav-img/nav-1.png" alt=""></div>
+                                        <div class="pro-img"><img src="/imgs/nav-img/nav-3-3.png" alt=""></div>
                                         <div class="pro-name">小米CC9</div>
                                         <div class="pro-price">1799元</div>
                                     </a>
                                 </li>
                                 <li class="product">
                                     <a href="" target="_blank">
-                                        <div class="pro-img"><img src="/imgs/nav-img/nav-1.png" alt=""></div>
+                                        <div class="pro-img"><img src="/imgs/nav-img/nav-3-4.jpg" alt=""></div>
                                         <div class="pro-name">小米CC9</div>
                                         <div class="pro-price">1799元</div>
                                     </a>
                                 </li>
                                 <li class="product">
                                     <a href="" target="_blank">
-                                        <div class="pro-img"><img src="/imgs/nav-img/nav-1.png" alt=""></div>
+                                        <div class="pro-img"><img src="/imgs/nav-img/nav-3-5.jpg" alt=""></div>
                                         <div class="pro-name">小米CC9</div>
                                         <div class="pro-price">1799元</div>
                                     </a>
                                 </li>
                                 <li class="product">
                                     <a href="" target="_blank">
-                                        <div class="pro-img"><img src="/imgs/nav-img/nav-1.png" alt=""></div>
+                                        <div class="pro-img"><img src="/imgs/nav-img/nav-3-6.png" alt=""></div>
                                         <div class="pro-name">小米CC9</div>
                                         <div class="pro-price">1799元</div>
                                     </a>
@@ -137,6 +137,28 @@
 <script>
 export default {
     name:'nav-header',
+    data(){
+        return{
+            username:'dzm',
+            phoneList:[]
+        }
+    },
+    mounted(){
+        this.getProductList()
+    },
+    methods:{
+        getProductList(){
+            this.axios.get('/products',{
+                params:{
+                    categoryId:'100012',
+                    // pageSize:6
+                }
+            }).then((res)=>{
+                this.phoneList = res.list
+            })
+        }
+    }
+    
 }
 </script>
 
@@ -175,8 +197,9 @@ export default {
             }
         }
         .nav-header{
+            position: relative;
             .container{
-                position: relative;
+                
                 height: 112px;
                 // logo
                 .header-logo{
@@ -233,11 +256,15 @@ export default {
                            opacity: 0;
                            overflow: hidden;
                            z-index: 10;
-                           width: 1126px;
+                           width: 100%;
                            height: 0;
                            transition:all .5s;
                            border-top: 1px solid #E5E5E5;
-                           
+
+                            ul{
+                                width: 1126px;
+                                margin: 0 auto;
+                            }
                            
                             .product{
                                 position: relative;

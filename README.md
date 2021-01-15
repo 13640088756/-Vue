@@ -1,6 +1,6 @@
 # xiaomi
 
-## Project setup
+## 小米商城
 ```
 npm install
 ```
