@@ -8,12 +8,17 @@
 
 <script>
 import NavHeader from '../components/NavHeader.vue'
+import NavFooter from '../components/NavFooter.vue'
 export default {
-    name:'home'
+    name:'home',
+    components:{
+        NavHeader,
+        NavFooter
+    }
 }
-</script
-        NavHeader>
 
-<style lang="stylus">
+</script>
+
+<style lang="scss">
 
 </style>

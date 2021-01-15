@@ -1,9 +1,9 @@
 <template>
-    <div>loginList</div>
+    <div>OrderHeader</div>
 </template>
 
 <script>
     export default {
-        name:'loginList'
+        name:'orderHeader'
     }
 </script>
