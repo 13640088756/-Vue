@@ -94,7 +94,9 @@
         <h2>手机</h2>
         <div class="warpper">
           <div class="banner-left">
-            <a href="/#/product/30"><img v-lazy="'/imgs/mix-alpha.jpg'" alt="" /></a>
+            <a href="/#/product/30"
+              ><img v-lazy="'/imgs/mix-alpha.jpg'" alt=""
+            /></a>
           </div>
           <div class="list-box">
             <div class="list" v-for="(item, index) in phoneList" :key="index">
@@ -109,7 +111,9 @@
                 <div class="item-info">
                   <h3>{{ sub.name }}</h3>
                   <p>{{ sub.subtitle }}</p>
-                  <p class="price" @click="addCart">{{ sub.price }}元</p>
+                  <p class="price" @click="addCart(sub.id)">
+                    {{ sub.price }}元
+                  </p>
                 </div>
               </div>
             </div>
@@ -125,7 +129,7 @@
       modalType="middle"
       v-bind:showModal="showModal"
       @submit="goToCart"
-      @cancel="showModal=false"
+      @cancel="showModal = false"
     >
       <!-- 插槽 -->
       <template v-slot:body>
@@ -235,7 +239,7 @@ export default {
           prevEl: ".swiper-button-prev",
         },
       },
-      showModal:false
+      showModal: false,
     };
   },
   mounted() {
@@ -262,12 +266,23 @@ export default {
           this.phoneList = [res.list.slice(0, 4), res.list.slice(4, 8)];
         });
     },
-    addCart(){
-      this.showModal=true
+    addCart(id) {
+      this.axios
+        .post("/carts", {
+          productId: id,
+          selected: true,
+        })
+        .then((res) => {
+          this.showModal = true;
+          this.$store.dispatch("saveCartCount", res.cartTotalQuantity);
+        })
+        .catch(() => {
+          this.showModal = true;
+        });
     },
-    goToCart(){
-      this.$router.push('/cart')
-    }
+    goToCart() {
+      this.$router.push("/cart");
+    },
   },
 };
 </script>
