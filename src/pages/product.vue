@@ -2,7 +2,7 @@
   <div class="product">
     <product-param :title="product.name">
       <template v-slot:buy>
-        <button class="btn">立即购买</button>
+        <button class="btn" @click="goDetail">立即购买</button>
       </template>
     </product-param>
     <div class="content">
@@ -116,6 +116,10 @@ export default {
         this.product = res;
       });
     },
+    goDetail(){
+      let id = this.$route.params.id;
+      this.$router.push(`/detail/${id}`)
+    }
   },
 };
 </script>

@@ -29,23 +29,32 @@ export default {
     // mapActions 辅助函数
     ...mapActions(["saveUsername", "saveCartCount"]),
     getUser() {
-      this.axios.get("/user").then((res = {}) => {
-        // to-do 通过cookie 获取用户信息 保存到 vuex
-        // this.$store.dispatch('saveUsername',res.username)
-        this.saveUsername(res.username);
-      });
+      this.axios
+        .get("/user")
+        .then((res = {}) => {
+          // to-do 通过cookie 获取用户信息 保存到 vuex
+          // this.$store.dispatch('saveUsername',res.username)
+          this.saveUsername(res.username);
+        })
+        .catch((res) => {
+          
+        });
     },
     getCartCount() {
-      this.axios.get("/carts/products/sum").then((res = 0) => {
-        // this.$store.dispatch('saveCartCount',res)
-        this.saveCartCount(res);
-      });
+      this.axios
+        .get("/carts/products/sum")
+        .then((res = 0) => {
+          // this.$store.dispatch('saveCartCount',res)
+          this.saveCartCount(res);
+        })
+        .catch((res) => {
+         
+        });
     },
   },
 };
 </script>
 <style lang="scss">
-@import "./assets/scss/config.scss";
 @import "./assets/scss/button.scss";
 @import "./assets/scss/base.scss";
 @import "./assets/scss/reset.scss";
