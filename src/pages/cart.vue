@@ -57,14 +57,14 @@
           <div class="total fr">
             合计：<span>{{ cartTotalPrice }}</span
             >元
-            <a href="javascript:;" class="btn">去结算</a>
+            <a href="javascript:;" class="btn" @click="order">去结算</a>
           </div>
         </div>
       </div>
     </div>
     <service-bar></service-bar>
     <nav-footer></nav-footer>
-    <modal :showModal=showModal title='商品列表' btnType='3' @cancel="showModal=false" @submit="deleteCartItem(currentIndex)">
+    <modal :showModal=showModal title='商品列表' btnType='3' @cancel="showModal=false" @submit="deleteCartItem()">
       <template v-slot:body>
         <p>是否删除商品</p>
       </template>
@@ -103,11 +103,13 @@ export default {
     this.getCartsList();
   },
   methods: {
+    // get购物车列表
     getCartsList() {
       this.axios.get("/carts").then((res) => {
         this.renderDate(res);
       });
     },
+    // 全选中/全不选中
     toggleAll() {
       // 根据是否已经选中状态，请求对应
       let url = this.selectedAll ? "/carts/unSelectAll" : "/carts/selectAll";
@@ -122,6 +124,7 @@ export default {
       this.selectedAll = res.selectedAll;
       this.checkNum = this.list.filter((item) => item.productSelected).length;
     },
+    // 更新购物车某个产品数量和单选功能
     updateCart(item, type) {
       // 数量
       let quantity = item.quantity;
@@ -153,15 +156,26 @@ export default {
     isDeleteCart(index){
       this.showModal=true
       this.currentIndex =index
-
     },
-    deleteCartItem(index){
+    // 移除购物车某个商品
+    deleteCartItem(){
       this.showModal=false
-      let productId =this.list[index].productId
+      let productId =this.list[this.currentIndex].productId
       this.axios.delete(`/carts/${productId}`).then((res)=>{
         this.renderDate(res)
       })
-    }
+    },
+    // 购物车下单
+    order(){
+      let ischeck = this.list.every((item)=>{
+        return !item.productSelected
+      })
+      if(ischeck){
+        alert('至少选择一件商品')
+      }else{
+        this.$router.push('/order/confirm');
+      }
+    },
   },
 };
 </script>
