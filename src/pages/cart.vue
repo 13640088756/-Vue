@@ -132,13 +132,13 @@ export default {
       let selected = item.productSelected;
       if (type == "-") {
         if (quantity == 1) {
-          alert("至少保留一件商品");
+          this.$message.warning("至少保留一件商品");
           return;
         }
         --quantity;
       } else if (type == "+") {
         if (quantity > item.productStock) {
-          alert("购买数量不能超过库存数量");
+         this.$message.warning("购买数量不能超过库存数量");
         }
         ++quantity;
       } else {
@@ -171,7 +171,7 @@ export default {
         return !item.productSelected
       })
       if(ischeck){
-        alert('至少选择一件商品')
+        this.$message.warning('至少选择一件商品')
       }else{
         this.$router.push('/order/confirm');
       }

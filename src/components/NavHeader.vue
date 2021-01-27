@@ -11,6 +11,7 @@
         <div class="topber-user">
           <a href="javascript:;" v-if="username">{{ username }}</a>
           <a href="javascript:;" v-if="!username" @click="goToLogin">登录</a>
+          <a href="javascript:;" v-if="username" @click="exitLogin">退出</a>
           <a href="javascript:;" v-if="username">我的订单</a>
           <a href="javascript:;" class="my-cart" @click="goToCart"
             ><span class="icon-cart"></span>购物车({{ cartCount }})</a
@@ -131,6 +132,9 @@ export default {
   },
   mounted() {
     this.getProductList();
+    if (this.$route.params && this.$route.params.from == "login") {
+      this.getCartCount();
+    }
   },
   computed: {
     /*
@@ -184,10 +188,30 @@ export default {
         });
     },
     goToCart() {
-      this.$router.push("/cart");
+      let isCart = this.$store.state.username;
+      if (isCart) {
+        this.$router.push("/cart");
+      }else{
+        this.$router.push("/login");
+      }
     },
     goToLogin() {
       this.$router.push("/login");
+    },
+    //退出
+    exitLogin() {
+      this.axios.post("/user/logout").then(() => {
+        this.$message("您已退出登录");
+        this.$cookie.set("userid", "", { expires: -1 });
+        this.$store.dispatch("saveUsername", "");
+        this.$store.dispatch("saveCartCount", 0);
+      });
+    },
+    getCartCount() {
+      this.axios.get("/carts/products/sum").then((res = 0) => {
+        this.$store.dispatch("saveCartCount", res);
+        // this.saveCartCount(res);
+      });
     },
   },
 };
@@ -238,7 +262,7 @@ export default {
       align-items: center;
       height: 112px;
       // logo css抽离
-      
+
       // 菜单
       .header-menu {
         width: 640px;

@@ -70,11 +70,16 @@ export default {
         password
       }).then((res)=>{
         console.log(res);
-        this.$cookie.set('id', 'res.id', { expires: '1M' });
+        this.$cookie.set('userid', 'res.id', { expires: '1M' });
         // this.$store.dispatch('saveUsername',res.username)
         // mapActions辅助
         this.saveUsername(res.username);
-        this.$router.push('/index');
+        this.$router.push({
+          name:'index',
+          params:{
+            from:'login'
+          }
+        });
       })
     },
     ...mapActions(['saveUsername']),

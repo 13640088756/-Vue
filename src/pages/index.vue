@@ -267,18 +267,22 @@ export default {
         });
     },
     addCart(id) {
-      this.axios
-        .post("/carts", {
-          productId: id,
-          selected: true,
-        })
-        .then((res) => {
-          this.showModal = true;
-          this.$store.dispatch("saveCartCount", res.cartTotalQuantity);
-        })
-        .catch(() => {
-          this.showModal = true;
-        });
+      if (this.$store.state.username) {
+        this.axios
+          .post("/carts", {
+            productId: id,
+            selected: true,
+          })
+          .then((res) => {
+            this.showModal = true;
+            this.$store.dispatch("saveCartCount", res.cartTotalQuantity);
+          })
+          .catch(() => {
+            this.showModal = true;
+          });
+      }else{
+        this.$message('请先登录')
+      }
     },
     goToCart() {
       this.$router.push("/cart");

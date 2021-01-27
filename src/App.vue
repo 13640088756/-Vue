@@ -22,34 +22,26 @@ export default {
     // this.axios.get('/user/login').then((res)=>{
     //   this.res=res
     // })
-    this.getUser();
-    this.getCartCount();
+    if (this.$cookie.get("userid")) {
+      this.getUser();
+      this.getCartCount();
+    }
   },
   methods: {
     // mapActions 辅助函数
     ...mapActions(["saveUsername", "saveCartCount"]),
     getUser() {
-      this.axios
-        .get("/user")
-        .then((res = {}) => {
-          // to-do 通过cookie 获取用户信息 保存到 vuex
-          // this.$store.dispatch('saveUsername',res.username)
-          this.saveUsername(res.username);
-        })
-        .catch((res) => {
-          
-        });
+      this.axios.get("/user").then((res = {}) => {
+        // to-do 通过cookie 获取用户信息 保存到 vuex
+        // this.$store.dispatch('saveUsername',res.username)
+        this.saveUsername(res.username);
+      });
     },
     getCartCount() {
-      this.axios
-        .get("/carts/products/sum")
-        .then((res = 0) => {
-          // this.$store.dispatch('saveCartCount',res)
-          this.saveCartCount(res);
-        })
-        .catch((res) => {
-         
-        });
+      this.axios.get("/carts/products/sum").then((res = 0) => {
+        // this.$store.dispatch('saveCartCount',res)
+        this.saveCartCount(res);
+      });
     },
   },
 };
