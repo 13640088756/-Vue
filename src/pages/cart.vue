@@ -44,7 +44,7 @@
               </div>
             </div>
             <div class="item-total">{{ item.productTotalPrice }}</div>
-            <div class="item-del" @click="isDeleteCart(index)"></div>
+            <div class="item-del" @click="isDeleteCart(item)"></div>
           </li>
         </div>
         <div class="close-wrap clearfix">
@@ -90,7 +90,7 @@ export default {
       // 选择数量
       checkNum: 0,
       showModal:false,
-      currentIndex:0,
+      currentItem:{},
     };
   },
   components: {
@@ -153,14 +153,14 @@ export default {
           this.renderDate(res);
         });
     },
-    isDeleteCart(index){
+    isDeleteCart(item){
       this.showModal=true
-      this.currentIndex =index
+      this.currentItem =item
     },
     // 移除购物车某个商品
     deleteCartItem(){
       this.showModal=false
-      let productId =this.list[this.currentIndex].productId
+      let productId =this.currentItem.productId
       this.axios.delete(`/carts/${productId}`).then((res)=>{
         this.renderDate(res)
       })
