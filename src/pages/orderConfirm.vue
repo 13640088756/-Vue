@@ -160,6 +160,7 @@
       btnType="1"
       @cancel="showAddAddress = false"
       @submit="submitAddress"
+      :activeColor= true
     >
       <template v-slot:body>
         <div class="edit-wrap">
@@ -230,9 +231,9 @@ export default {
       totalPrice: 0,
       checkedItem: {}, //要操作的item地址
       userAction: "", //行为 ,0添加 ,1修改, 2,删除
-      showModal: false, //控制modal显示隐藏
+      showModal: false, //控制 删除modal显示隐藏
       showAddAddress: false, //控制显示 添加地址modal
-      currentIndex:'',
+      currentIndex:'',//当前选中的地址 索引
     };
   },
   mounted() {

@@ -1,5 +1,11 @@
 <template>
-    <div>loginList</div>
+    <div class="order-list">
+      <div class="wrapper">
+        <div class="container">
+          
+        </div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -7,3 +13,7 @@
         name:'loginList'
     }
 </script>
+
+<style lang="scss">
+
+</style>

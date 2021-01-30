@@ -31,12 +31,18 @@ axios.interceptors.response.use(function(res) {
             if (path != '#/index') {
                 window.location.href = '/#/login';
             }
+            Message.warning(res.data.msg)
             return Promise.reject(res);
         } else {
-            alert(res.data.msg);
-            // this.$message.warning(res.data.mag)
+            // alert(res.data.msg);
+            Message.warning(res.data.msg)
+                // this.$message.warning(res.data.mag)
             return Promise.reject(res);
         }
+    }, (error) => {
+        let res = error.response
+        Message.error(res.data.message)
+        return Promise.reject(error)
     })
     // lazyload懒加载
 Vue.use(VueLazyLoad, {

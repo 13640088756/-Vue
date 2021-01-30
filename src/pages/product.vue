@@ -118,7 +118,7 @@ export default {
     },
     goDetail(){
       let id = this.$route.params.id;
-      this.$router.push(`/detail/${id}`)
+      this.$router.push({path:`/detail/${id}`})
     },
   },
 };
