@@ -42,6 +42,11 @@
         </symbol>
       </defs>
     </svg>
+    <order-header title="订单确认">
+      <template v-slot:tip>
+        <span>请认真填写收货地址</span>
+      </template>
+    </order-header>
     <div class="wrapper">
       <div class="container">
         <div class="order-box">
@@ -51,7 +56,13 @@
             <h2 class="addr-title">收货地址</h2>
             <div class="addr-list">
               <!-- 每一项 -->
-              <div class="addr-item" :class="{'checked':currentIndex ===index}" v-for="(item, index) in list" :key="index" @click="currentIndex=index">
+              <div
+                class="addr-item"
+                :class="{ checked: currentIndex === index }"
+                v-for="(item, index) in list"
+                :key="index"
+                @click="currentIndex = index"
+              >
                 <h2>{{ item.receiverName }}</h2>
                 <!-- 手机号 -->
                 <p class="phone">{{ item.receiverMobile }}</p>
@@ -73,7 +84,10 @@
                       <use xlink:href="#icon-del"></use></svg
                   ></a>
                   <a href="javascript:;" class="fr"
-                    ><svg class="icon icon-edit" @click="editAddressModal(item)">
+                    ><svg
+                      class="icon icon-edit"
+                      @click="editAddressModal(item)"
+                    >
                       <use xlink:href="#icon-edit"></use></svg
                   ></a>
                 </div>
@@ -138,7 +152,9 @@
           </div>
           <div class="btn-group">
             <a href="/#/cart" class="btn btn-large btn-default">返回购物车</a>
-            <a href="javascript:;" class="btn btn-large" @click="orderSubmit">去结算</a>
+            <a href="javascript:;" class="btn btn-large" @click="orderSubmit"
+              >去结算</a
+            >
           </div>
         </div>
       </div>
@@ -160,7 +176,7 @@
       btnType="1"
       @cancel="showAddAddress = false"
       @submit="submitAddress"
-      :activeColor= true
+      :activeColor="true"
     >
       <template v-slot:body>
         <div class="edit-wrap">
@@ -219,9 +235,10 @@
 </template>
 
 <script>
+import OrderHeader from "../components/OrderHeader.vue";
 import Modal from "../components/Modal.vue";
 export default {
-  components: { Modal },
+  components: { Modal, OrderHeader },
   name: "orderConfirm",
   data() {
     return {
@@ -233,7 +250,7 @@ export default {
       userAction: "", //行为 ,0添加 ,1修改, 2,删除
       showModal: false, //控制 删除modal显示隐藏
       showAddAddress: false, //控制显示 添加地址modal
-      currentIndex:'',//当前选中的地址 索引
+      currentIndex: "", //当前选中的地址 索引
     };
   },
   mounted() {
@@ -351,23 +368,25 @@ export default {
       });
     },
     //提交订单
-    orderSubmit(){
-      let orderAddress=this.list[this.currentIndex]
-      if(!orderAddress){
-        this.$message.error('请选择一个收货地址');
+    orderSubmit() {
+      let orderAddress = this.list[this.currentIndex];
+      if (!orderAddress) {
+        this.$message.error("请选择一个收货地址");
         return;
       }
-      this.axios.post('/orders',{
-        shippingId:orderAddress.id
-      }).then((res)=>{
-        this.$router.push({
-          path:'/order/pay',
-          query:{
-            orderNo:res.orderNo
-          }
+      this.axios
+        .post("/orders", {
+          shippingId: orderAddress.id,
         })
-      })
-    }
+        .then((res) => {
+          this.$router.push({
+            path: "/order/pay",
+            query: {
+              orderNo: res.orderNo,
+            },
+          });
+        });
+    },
   },
 };
 </script>
@@ -425,9 +444,9 @@ export default {
                 vertical-align: middle;
               }
             }
-            &.checked{
-                border:1px solid #ff6700;
-              }
+            &.checked {
+              border: 1px solid #ff6700;
+            }
           }
           .addr-add {
             text-align: center;

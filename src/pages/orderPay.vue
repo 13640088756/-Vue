@@ -1,5 +1,10 @@
 <template>
   <div class="order-pay">
+    <order-header title="订单支付">
+      <template v-slot:tip>
+        <span>请谨防钓鱼链接或诈骗电话，了解更多</span>
+      </template>
+    </order-header>
     <div class="wrapper">
       <div class="container">
         <div class="order-wrap">
@@ -87,7 +92,7 @@
       cancelText="未支付"
       :showModal="showModalPay"
       @submit="getOrderList"
-      @cancel="showModalPay=false"
+      @cancel="showModalPay = false"
     >
       <template v-slot:body>
         <p>是否完成支付？</p>
@@ -97,6 +102,7 @@
 </template>
 
 <script>
+import OrderHeader from "../components/OrderHeader.vue";
 import scanPayCode from "../components/scanPayCode.vue";
 import QRCode from "qrcode";
 import Modal from "../components/Modal.vue";
@@ -113,10 +119,11 @@ export default {
       isShowCode: false, //控制微信收款码显示隐藏
       payimg: "", // 支付二维码 base64
       showModalPay: false, //支付确认弹窗 是否显示
-      timePay:'' //轮询支付状态的 请求定时器
+      timePay: "", //轮询支付状态的 请求定时器
     };
   },
   components: {
+    OrderHeader,
     scanPayCode,
     Modal,
   },
@@ -139,8 +146,8 @@ export default {
     },
     close() {
       this.isShowCode = false;
-      this.showModalPay=true;
-      clearInterval(this.timePay)
+      this.showModalPay = true;
+      clearInterval(this.timePay);
     },
     submitPay(payType) {
       this.payType = payType;
@@ -159,7 +166,7 @@ export default {
               .then((url) => {
                 this.isShowCode = true;
                 this.payimg = url;
-                this.getPayStatus()
+                this.getPayStatus();
               })
               .catch(() => {
                 this.$message.error("二维码生成失败");
@@ -169,21 +176,21 @@ export default {
     },
     //查看跳转订单列表
     getOrderList() {
-      this.$router.push('/order/list')
+      this.$router.push("/order/list");
     },
     //轮询支付状态
-    getPayStatus(){
-      this.timePay=setInterval(()=>{
-        this.axios.get(`orders/${this.orderNo}`).then((res)=>{
-          if(res.status==20){
+    getPayStatus() {
+      this.timePay = setInterval(() => {
+        this.axios.get(`orders/${this.orderNo}`).then((res) => {
+          if (res.status == 20) {
             //取消定时器
-            clearInterval(this.timePay)
+            clearInterval(this.timePay);
             // 支付成功跳转
-            this.getOrderList()
+            this.getOrderList();
           }
-        })
-      },1000)
-    } 
+        });
+      }, 1000);
+    },
   },
 };
 </script>
