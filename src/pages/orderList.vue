@@ -8,83 +8,131 @@
     <div class="wrapper">
       <div class="container">
         <div class="order-box">
-          <div class="order-item" v-for="(order,index) in list" :key="index"> 
+          <loading v-if="isLoading"></loading>
+          <no-data v-if="isLoading == false && list.length == 0"></no-data>
+          <div class="order-item" v-for="(order, index) in list" :key="index">
             <div class="order-title">
               <div class="title-info">
-                {{order.createTime}}
+                {{ order.createTime }}
                 <span>|</span>
-                {{order.receiverName}}
+                {{ order.receiverName }}
                 <span>|</span>
-                订单号：{{order.createTime}}
+                订单号：{{ order.createTime }}
                 <span>|</span>
-                {{order.paymentTypeDesc}}
+                {{ order.paymentTypeDesc }}
               </div>
               <div class="title-money">
                 <span>应付金额：</span>
-                <span class="money">{{order.payment}}</span>
+                <span class="money">{{ order.payment }}</span>
                 <span>元</span>
               </div>
             </div>
-            <div class="order-content" v-for="(item,j) in order.orderItemVoList" :key="j">
+            <div
+              class="order-content"
+              v-for="(item, j) in order.orderItemVoList"
+              :key="j"
+            >
               <div class="good-list">
                 <div class="good-img">
-                  <img
-                    :src="item.productImage"
-                    alt=""
-                  />
+                  <img :src="item.productImage" alt="" />
                 </div>
                 <div class="good-name">
-                  <div class="name">{{item.productName}}</div>
-                  <div class="money">{{item.totalPrice +'×'+item.quantity}}元</div>
+                  <div class="name">{{ item.productName }}</div>
+                  <div class="money">
+                    {{ item.totalPrice + "×" + item.quantity }}元
+                  </div>
                 </div>
               </div>
-              <div class="good-state" v-if="order.status==20"><a href="javascript:;">{{order.statusDesc}}</a></div>
-              <div class="good-state" v-else><a href="javascript:;" @click="goToPay(order.orderNo)">{{order.statusDesc}}</a></div>
+              <div class="good-state" v-if="order.status == 20">
+                <a href="javascript:;">{{ order.statusDesc }}</a>
+              </div>
+              <div class="good-state" v-else>
+                <a href="javascript:;" @click="goToPay(order.orderNo)">{{
+                  order.statusDesc
+                }}</a>
+              </div>
             </div>
           </div>
         </div>
+        <el-pagination
+          class="pagination"
+          background
+          layout="prev, pager, next"
+          :total="total"
+          :page-size="pageSize"
+          @current-change="getCurrentPage"
+        >
+        </el-pagination>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import NoData from "../components/NoData.vue";
 import OrderHeader from "../components/OrderHeader.vue";
+import { Pagination } from "element-ui";
+import Loading from "./Loading.vue";
 export default {
   name: "loginList",
-  data(){
-    return{
-      list:[],
-    }
+  data() {
+    return {
+      list: [],
+      isLoading: true, //控制loading过渡组件显示隐藏
+      total: 0, //一共多少条数据
+      pageSize: 0, // 每次返多少条数据 默认10
+      currentPage: 1,
+    };
   },
   components: {
     OrderHeader,
+    Loading,
+    NoData,
+    [Pagination.name]: Pagination,
   },
-  mounted(){
-    this.getOrderList()
+  mounted() {
+    this.getOrderList();
   },
-  methods:{
-    getOrderList(){
-      this.axios('/orders').then((res)=>{
-        this.list=res.list
-      })
+  methods: {
+    getOrderList() {
+      this.axios
+        .get("/orders", {
+          params: {
+            pageSize: 10,
+            pageNum: this.currentPage,
+          },
+        })
+        .then((res) => {
+          this.isLoading = false;
+          this.list = res.list;
+          this.total = res.total;
+          this.pageSize = res.pageSize;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
-    goToPay(orderNo){
+    getCurrentPage(current) {
+      this.currentPage = current;
+      this.getOrderList();
+    },
+    goToPay(orderNo) {
       this.$router.push({
-        path:'/order/pay',
-        query:{
-          orderNo:orderNo
-        }
-      })
+        path: "/order/pay",
+        query: {
+          orderNo: orderNo,
+        },
+      });
     },
   },
 };
 </script>
 
 <style lang="scss">
+@import '../assets/scss/config.scss';
 .order-list {
   .wrapper {
-    background-color: #f5f5f5;
+    background-color: #ffffff;
     padding-top: 33px;
     padding-bottom: 110px;
     .order-box {
@@ -92,8 +140,8 @@ export default {
         border: 1px solid #d7d7d7;
         background-color: #ffffff;
         margin-top: 20px;
-        &:first-child{
-          margin-top:0 ;
+        &:first-child {
+          margin-top: 0;
         }
         .order-title {
           display: flex;
@@ -140,12 +188,20 @@ export default {
             height: 145px;
             line-height: 145px;
             font-size: 20px;
-            a{
+            a {
               color: #ff6600;
             }
           }
         }
       }
+    }
+    .pagination{
+      margin-top: 20px;
+      text-align: right;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+      background-color: $colorA;
+    color: #FFF;
     }
   }
 }

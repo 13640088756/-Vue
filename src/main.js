@@ -29,9 +29,13 @@ axios.interceptors.response.use(function(res) {
             return res.data.data;
         } else if (res.data.status == 10) {
             if (path != '#/index') {
-                window.location.href = '/#/login';
+                if (path == '#/order/list') {
+                    window.location.href = "/#/login?url=" + path.replace('#', '');
+                }
+            } else {
+                window.location.href = '#/login'
             }
-            Message.warning(res.data.msg)
+            Message.warning('请先登录')
             return Promise.reject(res);
         } else {
             // alert(res.data.msg);

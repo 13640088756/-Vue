@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import { mapActions } from "vuex";
 export default {
   name: "login",
   data() {
@@ -65,33 +65,44 @@ export default {
   methods: {
     getLogin() {
       let { username, password } = this;
-      this.axios.post("/user/login", {
-        username,
-        password
-      }).then((res)=>{
-        console.log(res);
-        this.$cookie.set('userid', 'res.id', { expires: '1M' });
-        // this.$store.dispatch('saveUsername',res.username)
-        // mapActions辅助
-        this.saveUsername(res.username);
-        this.$router.push({
-          name:'index',
-          params:{
-            from:'login'
+      this.axios
+        .post("/user/login", {
+          username,
+          password,
+        })
+        .then((res) => {
+          this.$cookie.set("userid", "res.id", { expires: "1M" });
+          // this.$store.dispatch('saveUsername',res.username)
+          // mapActions辅助
+          this.saveUsername(res.username);
+          // 获取参数 url
+          let url = this.$route.query.url;
+          if (url=='/order/list') {
+            this.$router.push({
+              path: url,
+            });
+          } else {
+            this.$router.push({
+              name: "index",
+              params: {
+                from: "login",
+              },
+            });
           }
         });
-      })
     },
-    ...mapActions(['saveUsername']),
-    getRegister(){
-      this.axios.post('/user/register',{
-        username:'dzm2',
-        password:'dzm2',
-        email:"dzm2@163.com"
-      }).then((res)=>{
-        alert('注册成功')
-      })
-    }
+    ...mapActions(["saveUsername"]),
+    getRegister() {
+      this.axios
+        .post("/user/register", {
+          username: this.username,
+          password: this.username,
+          email: `${this.username}@163.com`,
+        })
+        .then((res) => {
+          this.$message.success("注册成功");
+        });
+    },
   },
 };
 </script>
