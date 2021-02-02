@@ -54,7 +54,7 @@
             </div>
           </div>
         </div>
-        <el-pagination
+        <!-- <el-pagination
           class="pagination"
           background
           layout="prev, pager, next"
@@ -62,7 +62,15 @@
           :page-size="pageSize"
           @current-change="getCurrentPage"
         >
-        </el-pagination>
+        </el-pagination> -->
+        <div
+          v-infinite-scroll="loadMore"
+          infinite-scroll-disabled="busy"
+          infinite-scroll-distance="500"
+          class="pagination"
+        >
+          <img src="/imgs/loading-svg/loading-spinning-bubbles.svg" alt=""  v-show="isRollimg" />
+        </div>
       </div>
     </div>
   </div>
@@ -71,24 +79,29 @@
 <script>
 import NoData from "../components/NoData.vue";
 import OrderHeader from "../components/OrderHeader.vue";
-import { Pagination } from "element-ui";
+// 无限滚动插件
+import infiniteScroll from "vue-infinite-scroll";
+// import { Pagination } from "element-ui";
 import Loading from "./Loading.vue";
 export default {
   name: "loginList",
+  directives: { infiniteScroll },
   data() {
     return {
       list: [],
       isLoading: true, //控制loading过渡组件显示隐藏
       total: 0, //一共多少条数据
-      pageSize: 0, // 每次返多少条数据 默认10
+      pageSize: 10, // 每次返多少条数据 默认10
       currentPage: 1,
+      busy: true,
+      isRollimg:false,
     };
   },
   components: {
     OrderHeader,
     Loading,
     NoData,
-    [Pagination.name]: Pagination,
+    // [Pagination.name]: Pagination,
   },
   mounted() {
     this.getOrderList();
@@ -98,7 +111,7 @@ export default {
       this.axios
         .get("/orders", {
           params: {
-            pageSize: 10,
+            pageSize: this.pageSize,
             pageNum: this.currentPage,
           },
         })
@@ -107,15 +120,13 @@ export default {
           this.list = res.list;
           this.total = res.total;
           this.pageSize = res.pageSize;
+          this.busy=false
         })
         .catch(() => {
           this.isLoading = false;
         });
     },
-    getCurrentPage(current) {
-      this.currentPage = current;
-      this.getOrderList();
-    },
+    //跳转支付
     goToPay(orderNo) {
       this.$router.push({
         path: "/order/pay",
@@ -124,12 +135,44 @@ export default {
         },
       });
     },
+    //滚动加载更多列表数据专用
+    getList() {
+      this.isRollimg=true
+      this.axios
+        .get("/orders", {
+          params: {
+            pageSize: this.pageSize,
+            pageNum: this.currentPage,
+          },
+        })
+        .then((res) => {
+          this.isLoading = false;
+          this.list = res.list;
+          this.pageSize = res.pageSize;
+          if(res.hasNextPage==true){
+            this.busy=false
+          }else{
+            this.busy=true
+            this.isRollimg=false
+          }
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
+    },
+    loadMore() {
+      this.busy = true;
+      this.currentPage++;
+      setTimeout(()=>{
+        this.getList()
+      },500)
+    },
   },
 };
 </script>
 
 <style lang="scss">
-@import '../assets/scss/config.scss';
+@import "../assets/scss/config.scss";
 .order-list {
   .wrapper {
     background-color: #ffffff;
@@ -195,13 +238,13 @@ export default {
         }
       }
     }
-    .pagination{
+    .pagination {
       margin-top: 20px;
-      text-align: right;
+      text-align: center;
     }
     .el-pagination.is-background .el-pager li:not(.disabled).active {
       background-color: $colorA;
-    color: #FFF;
+      color: #fff;
     }
   }
 }
