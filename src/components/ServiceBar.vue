@@ -25,9 +25,12 @@ export default {
     background: #ffffff;
     li{
       display:inline-block;
-      width:24.9%;
+      width:24.7%;
       text-align:center;
       border-right:1px solid #E5E5E5;
+      &:last-child{
+        border: none;
+      }
       span{
         display:inline-block;
         width:20px;

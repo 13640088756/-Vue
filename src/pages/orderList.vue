@@ -55,7 +55,9 @@
           </div>
         </div>
         <div class="load-more">
-          <el-button type="primary" :loading="isLoading" @click="getLoadMore">更多订单</el-button>
+          <el-button type="primary" :loading="isLoading" @click="getLoadMore"
+            >更多订单</el-button
+          >
         </div>
         <!-- <el-pagination
           class="pagination"
@@ -82,7 +84,7 @@ export default {
     return {
       list: [],
       isLoading: false, //控制loading过渡组件显示隐藏
-      total: 0, //一共多少条数据
+      // total: 0, //一共多少条数据
       pageSize: 5, // 每次返多少条数据 默认10
       currentPage: 1,
     };
@@ -108,9 +110,13 @@ export default {
         })
         .then((res) => {
           this.isLoading = false;
-          this.list = this.list.concat(res.list);
-          this.total = res.total;
-          this.pageSize = res.pageSize;
+          if (this.currentPage > 1 && res.list.length == 0) {
+            this.$message.warning("暂无更多订单");
+          } else {
+            this.list = this.list.concat(res.list);
+            // this.total = res.total;
+            this.pageSize = res.pageSize;
+          }
         })
         .catch(() => {
           this.isLoading = false;
@@ -122,9 +128,9 @@ export default {
       this.getOrderList();
     },
     // 加载更多订单功能
-    getLoadMore(){
-      this.currentPage++
-      this.getOrderList()
+    getLoadMore() {
+      this.currentPage++;
+      this.getOrderList();
     },
     goToPay(orderNo) {
       this.$router.push({
