@@ -54,7 +54,10 @@
             </div>
           </div>
         </div>
-        <el-pagination
+        <div class="load-more">
+          <el-button type="primary" :loading="isLoading" @click="getLoadMore">更多订单</el-button>
+        </div>
+        <!-- <el-pagination
           class="pagination"
           background
           layout="prev, pager, next"
@@ -62,7 +65,7 @@
           :page-size="pageSize"
           @current-change="getCurrentPage"
         >
-        </el-pagination>
+        </el-pagination> -->
       </div>
     </div>
   </div>
@@ -71,16 +74,16 @@
 <script>
 import NoData from "../components/NoData.vue";
 import OrderHeader from "../components/OrderHeader.vue";
-import { Pagination } from "element-ui";
+import { Button } from "element-ui";
 import Loading from "./Loading.vue";
 export default {
   name: "loginList",
   data() {
     return {
       list: [],
-      isLoading: true, //控制loading过渡组件显示隐藏
+      isLoading: false, //控制loading过渡组件显示隐藏
       total: 0, //一共多少条数据
-      pageSize: 0, // 每次返多少条数据 默认10
+      pageSize: 5, // 每次返多少条数据 默认10
       currentPage: 1,
     };
   },
@@ -88,23 +91,24 @@ export default {
     OrderHeader,
     Loading,
     NoData,
-    [Pagination.name]: Pagination,
+    [Button.name]: Button,
   },
   mounted() {
     this.getOrderList();
   },
   methods: {
     getOrderList() {
+      this.isLoading = true;
       this.axios
         .get("/orders", {
           params: {
-            pageSize: 10,
+            pageSize: this.pageSize,
             pageNum: this.currentPage,
           },
         })
         .then((res) => {
           this.isLoading = false;
-          this.list = res.list;
+          this.list = this.list.concat(res.list);
           this.total = res.total;
           this.pageSize = res.pageSize;
         })
@@ -112,9 +116,15 @@ export default {
           this.isLoading = false;
         });
     },
+    // 分页功能
     getCurrentPage(current) {
       this.currentPage = current;
       this.getOrderList();
+    },
+    // 加载更多订单功能
+    getLoadMore(){
+      this.currentPage++
+      this.getOrderList()
     },
     goToPay(orderNo) {
       this.$router.push({
@@ -129,7 +139,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../assets/scss/config.scss';
+@import "../assets/scss/config.scss";
 .order-list {
   .wrapper {
     background-color: #ffffff;
@@ -195,13 +205,17 @@ export default {
         }
       }
     }
-    .pagination{
+    .pagination {
       margin-top: 20px;
       text-align: right;
     }
     .el-pagination.is-background .el-pager li:not(.disabled).active {
       background-color: $colorA;
-    color: #FFF;
+      color: #fff;
+    }
+    .load-more {
+      margin-top: 20px;
+      text-align: center;
     }
   }
 }
