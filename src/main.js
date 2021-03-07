@@ -29,13 +29,11 @@ axios.interceptors.response.use(function(res) {
             return res.data.data;
         } else if (res.data.status == 10) {
             if (path != '#/index') {
-                if (path == '#/order/list') {
-                    window.location.href = "/#/login?url=" + path.replace('#', '');
-                }
-            } else {
-                window.location.href = '#/login'
+                window.location.href = "/#/login"
+            } else if (path == '#/order/list') {
+                window.location.href = "/#/login?url=" + path.replace('#', '');
             }
-            Message.warning('请先登录')
+            // Message.warning('请先登录')
             return Promise.reject(res);
         } else {
             // alert(res.data.msg);
